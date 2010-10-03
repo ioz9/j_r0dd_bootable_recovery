@@ -127,10 +127,10 @@ static void draw_progress_locked()
     int height = gr_get_height(gProgressBarIndeterminate[0]);
 
     int dx = (gr_fb_width() - width)/2;
-    int dy = 455;
+    int dy = 455;	//location of progress bar
 
     // Erase behind the progress bar (in case this was a progress-only update)
-    gr_color(0, 0, 0, 255);
+    gr_color(0, 0, 0, 220);	//progress bar transparency
     gr_fill(dx, dy, width, height);
 
     if (gProgressBarType == PROGRESSBAR_TYPE_NORMAL) {
@@ -172,20 +172,20 @@ static void draw_screen_locked(void)
     draw_progress_locked();
 
     if (show_text) {
-        gr_color(0, 0, 0, 100);
+        gr_color(0, 0, 0, 160);		//overlay
         gr_fill(0, 0, gr_fb_width(), gr_fb_height());
 
         int i = 0;
         if (show_menu) {
-            gr_color(0, 0, 0, 0);
+            gr_color(222, 222, 222, 180);	//highlight bar
             gr_fill(0, (menu_top+menu_sel) * CHAR_HEIGHT,
                     gr_fb_width(), (menu_top+menu_sel+1)*CHAR_HEIGHT+1);
 
-            for (; i < menu_top + menu_items; ++i) {
+             for (; i < menu_top + menu_items; ++i) {
                 if (i == menu_top + menu_sel) {
-                    gr_color(0, 51, 255, 160);
+                    gr_color(18, 18, 18, 255);	//text color when highlighted
                     draw_text_line(i, menu[i]);
-            	    gr_color(0, 0, 0, 0);
+            	    gr_color(222, 222, 222, 180);		//line under menu
                 } else {
                     draw_text_line(i, menu[i]);
                 }
@@ -195,7 +195,7 @@ static void draw_screen_locked(void)
             ++i;
         }
 
-        gr_color(0, 51, 255, 255);
+        gr_color(222, 222, 222, 255);	//text at bottom and when flashing
 
         for (; i < text_rows; ++i) {
             draw_text_line(i, text[(i+text_top) % text_rows]);
