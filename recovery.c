@@ -291,10 +291,25 @@ test_amend()
 static int
 erase_root(const char *root)
 {
-    ui_set_background(BACKGROUND_ICON_INSTALLING);
-    ui_show_indeterminate_progress();
     ui_print("Formatting %s...\n", root);
     return format_root_device(root);
+}
+
+static void
+exec_script(char *str1,char *str2)
+{
+	ui_print(str1);
+        pid_t pid = fork();
+      	if (pid == 0) {
+		char *args[] = { "/sbin/sh", "-c", str2, "1>&2", NULL };
+         	execv("/sbin/sh", args);
+                _exit(-0);
+            }
+	    int status;
+	    while (waitpid(pid, &status, WNOHANG) == 0) {
+          	sleep(1);
+	    }
+		if (!ui_text_visible()) return;
 }
 
 static void
@@ -780,6 +795,7 @@ show_menu_wipe()
 #define ITEM_WIPE_EXT         3
 #define ITEM_WIPE_BAT         4
 #define ITEM_WIPE_ROT         5
+#define ITEM_WIPE_ALL         6
 
     static char* items[] = { "- Wipe data/factory reset",
                              "- Wipe cache",
@@ -787,6 +803,7 @@ show_menu_wipe()
                              "- Wipe SD-Ext partition",
                              "- Wipe battery stats",
                              "- Wipe rotate settings",
+                             "- ***WIPE ALL***",
                              NULL };
 
     ui_start_menu(headers, items);
@@ -889,6 +906,29 @@ show_menu_wipe()
 				   "\nRotate settings wipe complete!\n\n",
 				   "\nRotate settings wipe aborted!\n\n");
 			break;
+                case ITEM_WIPE_ALL:
+		    ui_print("\n***WIPE ALL***");
+                    ui_print("\nPress HOME to confirm,");
+                    ui_print("\nany other key to abort.\n");
+                    int confirm_wipe_all = ui_wait_key();
+                    if (confirm_wipe_all == KEY_DREAM_HOME) {
+                        ui_print("\nWiping everything...\n");
+                        erase_root("DATA:");
+                        erase_root("CACHE:");
+		    exec_script("\nWiping Dalvik-cache...\n",
+				"/sbin/wipe dalvik");
+		    exec_script("\nWiping ext filesystem...\n",
+				"/sbin/wipe ext");
+		    exec_script("\nWiping battery stats...\n",
+				"/sbin/wipe battery");
+		    exec_script("\nWiping rotate settings...",
+				"/sbin/wipe rotate");
+                        ui_print("\nWipe all complete.\n\n");
+                    } else {
+                        ui_print("\nWipe all aborted.\n\n");
+                    }
+                    if (!ui_text_visible()) return;
+                    	break;
             
             }
 
@@ -924,9 +964,9 @@ show_menu_br()
 #define ITEM_NANDROID_RES  2
 
 
-    static char* items[] = { "- Nand backup",
-			     "- Nand + EXT backup",
-			     "- Nand restore",
+    static char* items[] = { "- Backup",
+			     "- Backup + EXT",
+			     "- Restore",
                              NULL };
 
     ui_start_menu(headers, items);
@@ -970,7 +1010,7 @@ show_menu_br()
 			break;
 
                 case ITEM_NANDROID_BCKEXT:
-			run_script("\nCreate Nandroid + EXT backup?",
+			run_script("\nCreate Nandroid backup + EXT?",
 				   "\nPerforming backup : ",
 				   "/sbin/nandroid-mobile.sh -b -e --norecovery --nomisc --nosplash1 --nosplash2 --defaultinput",
 				   "\nuNnable to execute nandroid-mobile.sh!\n(%s)\n",
@@ -1289,6 +1329,7 @@ prompt_and_wait()
 #define ITEM_WIPE          4
 #define ITEM_PARTITION     5
 #define ITEM_OTHER         6
+#define ITEM_POWEROFF      7
 
 
     static char* items[] = { "- Reboot system now",
@@ -1298,6 +1339,7 @@ prompt_and_wait()
                              "- Wipe",
                              "- Partition SD",
                              "- Other",
+			     "- Power off",
                              NULL };
 
     ui_start_menu(headers, items);
@@ -1408,6 +1450,18 @@ prompt_and_wait()
 		case ITEM_OTHER:
                     show_menu_other();
         	    break;           
+
+		case ITEM_POWEROFF:
+			run_script("\nPower off phone?",
+				   "\nShutting down : ",
+				   "/sbin/reboot -p",
+				   "\nUnable to power off phone!\n(%s)\n",
+				   "\nError : Run 'reboot -p' via adb!\n\n",
+				   "\nPower off complete!\n\n",
+				   "\nPower off aborted!\n\n");
+			break;
+
+
             }
 
             // if we didn't return from this function to reboot, show
