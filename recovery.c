@@ -911,7 +911,7 @@ show_menu_wipe()
                     ui_print("\nPress HOME to confirm,");
                     ui_print("\nany other key to abort.\n");
                     int confirm_wipe_all = ui_wait_key();
-                    if (confirm_wipe_all == KEY_DREAM_HOME) {
+                    if (confirm_wipe_all == KEY_MOTUS_POWER) {
                         ui_print("\nWiping everything...\n");
                         erase_root("DATA:");
                         erase_root("CACHE:");
