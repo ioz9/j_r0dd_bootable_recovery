@@ -1224,11 +1224,9 @@ show_menu_other()
 
 // these constants correspond to elements of the items[] list.
 #define ITEM_OTHER_FIXUID 0
-#define ITEM_OTHER_AP2SD  1
-#define ITEM_OTHER_RE2SD  2
+#define ITEM_OTHER_RE2SD  1
 
     static char* items[] = { "- Fix permissions",
-			     "- Move apps + dalvik to SD",
 			     "- Move recovery.log to SD",
                              NULL };
 
@@ -1272,16 +1270,6 @@ show_menu_other()
 				   "\nFixing aborted!\n\n");
 			break;
                    
-		case ITEM_OTHER_AP2SD:
-			run_script("\nMove apps and dalvik-cache to SD",
-				   "\nMoving : ",
-				   "/sbin/apps2sd",
-				   "\nUnable to execute apps2sd!\n(%s)\n",
-				   "\nError : Run 'apps2sd' via adb!\n\n",
-				   "\nMoving complete!\n\n",
-				   "\nMoving aborted!\n\n");
-			break;
-
 		case ITEM_OTHER_RE2SD:
 			run_script("\nMove recovery.log to SD",
 				   "\nMoving : ",
