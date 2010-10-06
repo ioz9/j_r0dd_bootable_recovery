@@ -318,12 +318,6 @@ static void *input_thread(void *cookie)
             pthread_mutex_unlock(&gUpdateMutex);
         }
 
-        // Green+Menu+Red: reboot immediately
-        if (ev.code == KEY_DREAM_RED &&
-            key_pressed[KEY_DREAM_MENU] &&
-            key_pressed[KEY_DREAM_GREEN]) {
-            reboot(RB_AUTOBOOT);
-        }
     }
     return NULL;
 }
