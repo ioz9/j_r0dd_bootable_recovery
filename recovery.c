@@ -908,7 +908,7 @@ show_menu_wipe()
 			break;
                 case ITEM_WIPE_ALL:
 		    ui_print("\n***WIPE ALL***");
-                    ui_print("\nPress HOME to confirm,");
+                    ui_print("\nPress POWER to confirm,");
                     ui_print("\nany other key to abort.\n");
                     int confirm_wipe_all = ui_wait_key();
                     if (confirm_wipe_all == KEY_MOTUS_POWER) {
