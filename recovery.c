@@ -755,7 +755,7 @@ choose_update_file()
                     break;  // reboot if logs aren't visible
                 } else {
                     if (firmware_update_pending()) {
-                        ui_print("\nReboot via POWER+CAMERA or menu\n"
+                        ui_print("\nReboot via menu\n"
                                  "to complete installation.\n");
                     } else {
                         ui_print("\nInstall from sdcard complete.\n");
