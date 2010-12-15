@@ -316,10 +316,10 @@ static void
 run_script(char *str1,char *str2,char *str3,char *str4,char *str5,char *str6,char *str7)
 {
 	ui_print(str1);
-	ui_print("\nPress HOME to confirm,");
+	ui_print("\nPress TRACKPAD to confirm,");
        	ui_print("\nany other key to abort.\n");
 	int confirm = ui_wait_key();
-		if (confirm == KEY_CLIQXT_HOME) {
+		if (confirm == KEY_CLIQXT_PRESS) {
                 	ui_print(str2);
 		        pid_t pid = fork();
                 	if (pid == 0) {
@@ -448,7 +448,7 @@ choose_nandroid_file(const char *nandroid_folder)
         } else if ((key == KEY_CLIQXT_UP) && visible) {
             --selected;
             selected = ui_menu_select(selected);
-        } else if ((key == KEY_CLIQXT_HOME) && visible ) {
+        } else if ((key == KEY_CLIQXT_PRESS) && visible ) {
             chosen_item = selected;
         }
 
@@ -459,10 +459,10 @@ choose_nandroid_file(const char *nandroid_folder)
 
             ui_print("\nRestore ");
             ui_print(list[chosen_item]);
-            ui_print(" ?\nPress HOME to confirm,");
+            ui_print(" ?\nPress TRACKPAD to confirm,");
             ui_print("\nany other key to abort.\n");
             int confirm_apply = ui_wait_key();
-            if (confirm_apply == KEY_CLIQXT_HOME) {
+            if (confirm_apply == KEY_CLIQXT_PRESS) {
                       
                             ui_print("\nRestoring : ");
        		            char nandroid_command[200]="/sbin/nandroid-mobile.sh -r -e --defaultinput --nosplash1 --nosplash2 --norecovery -s ";
@@ -612,7 +612,7 @@ choose_nandroid_folder()
         } else if ((key == KEY_CLIQXT_UP) && visible) {
             --selected;
             selected = ui_menu_select(selected);
-        } else if ((key == KEY_CLIQXT_HOME) && visible ) {
+        } else if ((key == KEY_CLIQXT_PRESS) && visible ) {
             chosen_item = selected;
         }
 
@@ -731,7 +731,7 @@ choose_update_file()
         } else if ((key == KEY_CLIQXT_UP) && visible) {
             --selected;
             selected = ui_menu_select(selected);
-        } else if ((key == KEY_CLIQXT_HOME) && visible ) {
+        } else if ((key == KEY_CLIQXT_PRESS) && visible ) {
             chosen_item = selected;
         }
 
@@ -742,10 +742,10 @@ choose_update_file()
 
             ui_print("\nInstall : ");
             ui_print(files[chosen_item]);
-            ui_print(" ? \nPress HOME to confirm,");
+            ui_print(" ? \nPress TRACKPAD to confirm,");
             ui_print("\nany other key to abort.\n");
             int confirm_apply = ui_wait_key();
-            if (confirm_apply == KEY_CLIQXT_HOME) {
+            if (confirm_apply == KEY_CLIQXT_PRESS) {
                 ui_print("\nInstall from sdcard...\n");
                 int status = install_package(files[chosen_item]);
                 if (status != INSTALL_SUCCESS) {
@@ -824,7 +824,7 @@ show_menu_wipe()
         } else if ((key == KEY_CLIQXT_UP) && visible) {
             --selected;
             selected = ui_menu_select(selected);
-        } else if ((key == KEY_CLIQXT_HOME) && visible ) {
+        } else if ((key == KEY_CLIQXT_PRESS) && visible ) {
             chosen_item = selected;
         }
 
@@ -837,10 +837,10 @@ show_menu_wipe()
 
                 case ITEM_WIPE_DATA:
 		    ui_print("\nWipe data and cache");
-                    ui_print("\nPress HOME to confirm,");
+                    ui_print("\nPress TRACKPAD to confirm,");
                     ui_print("\nany other key to abort.\n");
                     int confirm_wipe_data = ui_wait_key();
-                    if (confirm_wipe_data == KEY_CLIQXT_HOME) {
+                    if (confirm_wipe_data == KEY_CLIQXT_PRESS) {
                         ui_print("\nWiping data...\n");
                         erase_root("DATA:");
                         erase_root("CACHE:");
@@ -854,10 +854,10 @@ show_menu_wipe()
                 case ITEM_WIPE_CACHE:
                     ui_clear_key_queue();
 		    ui_print("\nWipe cache");
-                    ui_print("\nPress HOME to confirm,");
+                    ui_print("\nPress TRACKPAD to confirm,");
                     ui_print("\nany other key to abort.\n");
                     int confirm_wipe_cache = ui_wait_key();
-                    if (confirm_wipe_cache == KEY_CLIQXT_HOME) {
+                    if (confirm_wipe_cache == KEY_CLIQXT_PRESS) {
                         ui_print("\nWiping cache...\n");
                         erase_root("CACHE:");
                         ui_print("\nCache wipe complete.\n\n");
@@ -909,21 +909,15 @@ show_menu_wipe()
 
                 case ITEM_WIPE_ALL:
 		    ui_print("\n***WIPE ALL***");
-                    ui_print("\nPress HOME to confirm,");
+                    ui_print("\nPress TRACKPAD to confirm,");
                     ui_print("\nany other key to abort.\n");
                     int confirm_wipe_all = ui_wait_key();
-                    if (confirm_wipe_all == KEY_CLIQXT_HOME) {
+                    if (confirm_wipe_all == KEY_CLIQXT_PRESS) {
                         ui_print("\nWiping everything...\n");
                         erase_root("DATA:");
                         erase_root("CACHE:");
-		    exec_script("\nWiping Dalvik-cache...\n",
-				"/sbin/wipe dalvik");
-		    exec_script("\nWiping ext filesystem...\n",
+		    exec_script("\nWiping EXT filesystem...\n",
 				"/sbin/wipe ext");
-		    exec_script("\nWiping battery stats...\n",
-				"/sbin/wipe battery");
-		    exec_script("\nWiping rotate settings...",
-				"/sbin/wipe rotate");
                         ui_print("\nWipe all complete.\n\n");
                     } else {
                         ui_print("\nWipe all aborted.\n\n");
@@ -989,7 +983,7 @@ show_menu_br()
         } else if ((key == KEY_CLIQXT_UP) && visible) {
             --selected;
             selected = ui_menu_select(selected);
-        } else if ((key == KEY_CLIQXT_HOME) && visible ) {
+        } else if ((key == KEY_CLIQXT_PRESS) && visible ) {
             chosen_item = selected;
         }
 
@@ -1085,7 +1079,7 @@ show_menu_partition()
         } else if ((key == KEY_CLIQXT_UP) && visible) {
             --selected;
             selected = ui_menu_select(selected);
-        } else if ((key == KEY_CLIQXT_HOME) && visible ) {
+        } else if ((key == KEY_CLIQXT_PRESS) && visible ) {
             chosen_item = selected;
         }
 
@@ -1098,20 +1092,20 @@ show_menu_partition()
 
 		case ITEM_PART_SD:
 			ui_print("\nPartition sdcard?");
-			ui_print("\nPress HOME to confirm,");
+			ui_print("\nPress TRACKPAD to confirm,");
 		       	ui_print("\nany other key to abort.");
 			int confirm = ui_wait_key();
-				if (confirm == KEY_CLIQXT_HOME) {
-				       	ui_print("\n\nUse volume-keys");
+				if (confirm == KEY_CLIQXT_PRESS) {
+				       	ui_print("\n\nUse trackpad");
 				       	ui_print("\nto increase/decrease size,");
-				       	ui_print("\nHOME to set (0=NONE) :\n\n");
+				       	ui_print("\nTRACKPAD to set (0=NONE) :\n\n");
 					char swapsize[32];
 					int swap = 32;
 					for (;;) {
 						sprintf(swapsize, "%4d", swap);
 						ui_print("\rSwap-size  = %s MB",swapsize);
         	                        	int key = ui_wait_key();
-						if (key == KEY_CLIQXT_HOME) {
+						if (key == KEY_CLIQXT_PRESS) {
 							if (swap==0){
 								ui_print("\rSwap-size  = %s MB : NONE\n",swapsize);
 							} else {
@@ -1132,7 +1126,7 @@ show_menu_partition()
 						sprintf(extsize, "%4d", ext);
 						ui_print("\rExt2-size  = %s MB",extsize);
         	                        	int key = ui_wait_key();
-						if (key == KEY_CLIQXT_HOME) {
+						if (key == KEY_CLIQXT_PRESS) {
 							if (ext==0){
 								ui_print("\rExt2-size  = %s MB : NONE\n",extsize);
 							} else {
@@ -1249,7 +1243,7 @@ show_menu_other()
         } else if ((key == KEY_CLIQXT_UP) && visible) {
             --selected;
             selected = ui_menu_select(selected);
-        } else if ((key == KEY_CLIQXT_HOME) && visible ) {
+        } else if ((key == KEY_CLIQXT_PRESS) && visible ) {
             chosen_item = selected;
         }
 
@@ -1342,11 +1336,11 @@ prompt_and_wait()
         int alt = ui_key_pressed(KEY_CLIQXT_SEARCH);
         int visible = ui_text_visible();
 
-        if (key == KEY_CLIQXT_BACK && ui_key_pressed(KEY_CLIQXT_HOME)) {
+        if (key == KEY_CLIQXT_BACK && ui_key_pressed(KEY_CLIQXT_PRESS)) {
             // Wait for the keys to be released, to avoid triggering
             // special boot modes (like coming back into recovery!).
             while (ui_key_pressed(KEY_CLIQXT_BACK) ||
-                   ui_key_pressed(KEY_CLIQXT_HOME)) {
+                   ui_key_pressed(KEY_CLIQXT_PRESS)) {
                 usleep(1000);
             }
             chosen_item = ITEM_REBOOT;
@@ -1357,7 +1351,7 @@ prompt_and_wait()
         } else if ((key == KEY_CLIQXT_UP) && visible) {
             --selected;
             selected = ui_menu_select(selected);
-        } else if ((key == KEY_CLIQXT_HOME) && visible ) {
+        } else if ((key == KEY_CLIQXT_PRESS) && visible ) {
             chosen_item = selected;
         }
 
@@ -1390,11 +1384,11 @@ prompt_and_wait()
                 		ui_print("\nError : Run ums_toggle via adb!\n\n");
                 	} else {
                 		ui_print("\nUSB-MS enabled!");
-				ui_print("\nPress HOME to disable,");
+				ui_print("\nPress TRACKPAD to disable,");
 				ui_print("\nand return to menu\n");
 		       		for (;;) {
         	                        	int key = ui_wait_key();
-						if (key == KEY_CLIQXT_HOME) {
+						if (key == KEY_CLIQXT_PRESS) {
 							ui_print("\nDisabling USB-MS : ");
 						        pid_t pid = fork();
 				                	if (pid == 0) {
@@ -1495,8 +1489,8 @@ main(int argc, char **argv)
     ui_print("Build : ");
     ui_print(prop_value);
     ui_print("\n");
-    ui_print("Use VOL-keys to navigate\n");
-    ui_print("HOME to select\n");
+    ui_print("Use TRACKPAD to navigate\n");
+    ui_print("Press TRACKPAD to select\n");
     ui_print("\n");
 
     get_args(&argc, &argv);

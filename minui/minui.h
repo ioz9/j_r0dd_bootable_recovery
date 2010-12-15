@@ -42,12 +42,11 @@ unsigned int gr_get_height(gr_surface surface);
 struct input_event;
 
 // CliqXT-specific key codes
-#define KEY_CLIQXT_UP         51 
-#define KEY_CLIQXT_DOWN       53
-#define KEY_CLIQXT_PRESS      31
+#define KEY_CLIQXT_UP         103 
+#define KEY_CLIQXT_DOWN       108
+#define KEY_CLIQXT_PRESS      3
 #define KEY_CLIQXT_BACK       45
 #define KEY_CLIQXT_SEARCH     23
-#define KEY_CLIQXT_HOME	      21
 
 
 
