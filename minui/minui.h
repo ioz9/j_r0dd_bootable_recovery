@@ -45,8 +45,8 @@ struct input_event;
 #define KEY_MOTUS_UP          53 
 #define KEY_MOTUS_DOWN        51
 #define KEY_MOTUS_ALT         16
-#define KEY_MOTUS_CAMERA      31
-#define KEY_MOTUS_POWER	      116
+#define KEY_MOTUS_BACK        158
+#define KEY_MOTUS_HOME	      102
 
 
 
