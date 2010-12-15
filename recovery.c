@@ -916,14 +916,8 @@ show_menu_wipe()
                         ui_print("\nWiping everything...\n");
                         erase_root("DATA:");
                         erase_root("CACHE:");
-		    exec_script("\nWiping Dalvik-cache...\n",
-				"/sbin/wipe dalvik");
-		    exec_script("\nWiping ext filesystem...\n",
+		    exec_script("\nWiping EXT filesystem...\n",
 				"/sbin/wipe ext");
-		    exec_script("\nWiping battery stats...\n",
-				"/sbin/wipe battery");
-		    exec_script("\nWiping rotate settings...",
-				"/sbin/wipe rotate");
                         ui_print("\nWipe all complete.\n\n");
                     } else {
                         ui_print("\nWipe all aborted.\n\n");
