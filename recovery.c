@@ -291,7 +291,7 @@ test_amend()
 static int
 erase_root(const char *root)
 {
-    ui_print("Formatting %s...\n", root);
+    ui_print("Wiping %s...\n", root);
     return format_root_device(root);
 }
 
@@ -465,7 +465,7 @@ choose_nandroid_file(const char *nandroid_folder)
             if (confirm_apply == KEY_CLIQXT_PRESS) {
                       
                             ui_print("\nRestoring : ");
-       		            char nandroid_command[200]="/sbin/nandroid-mobile.sh -r -e --defaultinput --nosplash1 --nosplash2 --norecovery -s ";
+       		            char nandroid_command[200]="/sbin/nandroid-mobile.sh -r -e -a --defaultinput --nosplash1 --nosplash2 --norecovery -s ";
 			    strlcat(nandroid_command, list[chosen_item], sizeof(nandroid_command));
 
                             pid_t pid = fork();
@@ -793,16 +793,16 @@ show_menu_wipe()
 #define ITEM_WIPE_CACHE       1
 #define ITEM_WIPE_DALVIK      2
 #define ITEM_WIPE_EXT         3
-#define ITEM_WIPE_BAT         4
-#define ITEM_WIPE_ROT         5
+#define ITEM_WIPE_AS          4
+#define ITEM_WIPE_BAT         5
 #define ITEM_WIPE_ALL         6
 
-    static char* items[] = { "- Wipe data/factory reset",
+    static char* items[] = { "- Wipe data",
                              "- Wipe cache",
-			     "- Wipe Dalvik-cache",
-                             "- Wipe SD-Ext partition",
+			     "- Wipe dalvik-cache",
+                             "- Wipe sd-ext",
+                             "- Wipe .android_secure",
                              "- Wipe battery stats",
-                             "- Wipe rotate settings",
                              "- ***WIPE ALL***",
                              NULL };
 
@@ -836,14 +836,12 @@ show_menu_wipe()
             switch (chosen_item) {
 
                 case ITEM_WIPE_DATA:
-		    ui_print("\nWipe data and cache");
+		    ui_print("\nWipe data");
                     ui_print("\nPress TRACKPAD to confirm,");
                     ui_print("\nany other key to abort.\n");
                     int confirm_wipe_data = ui_wait_key();
                     if (confirm_wipe_data == KEY_CLIQXT_PRESS) {
-                        ui_print("\nWiping data...\n");
                         erase_root("DATA:");
-                        erase_root("CACHE:");
                         ui_print("\nData wipe complete.\n\n");
                     } else {
                         ui_print("\nData wipe aborted.\n\n");
@@ -858,7 +856,6 @@ show_menu_wipe()
                     ui_print("\nany other key to abort.\n");
                     int confirm_wipe_cache = ui_wait_key();
                     if (confirm_wipe_cache == KEY_CLIQXT_PRESS) {
-                        ui_print("\nWiping cache...\n");
                         erase_root("CACHE:");
                         ui_print("\nCache wipe complete.\n\n");
                     } else {
@@ -868,8 +865,8 @@ show_menu_wipe()
                     	break;
 
 		case ITEM_WIPE_DALVIK:
-			run_script("\nWipe Dalvik-cache",
-				   "\nWiping Dalvik-cache : ",
+			run_script("\nWipe dalvik-cache",
+				   "\nWiping dalvik-cache : ",
 				   "/sbin/wipe dalvik",
 				   "\nUnable to execute wipe!\n(%s)\n",
 				   "\nError : Run 'wipe dalvik' via adb!\n\n",
@@ -878,13 +875,23 @@ show_menu_wipe()
 			break;
 
 	        case ITEM_WIPE_EXT:
-			run_script("\nWipe ext filesystem",
-				   "\nWiping ext filesystem : ",
+			run_script("\nWipe sd-ext",
+				   "\nWiping sd-ext : ",
 				   "/sbin/wipe ext",
 				   "\nUnable to execute wipe!\n(%s)\n",
 				   "\nError : Run 'wipe ext' via adb!\n\n",
 				   "\nExt wipe complete!\n\n",
 				   "\nExt wipe aborted!\n\n");
+			break;
+
+		case ITEM_WIPE_AS:
+			run_script("\nWipe .android_secure",
+				   "\nWiping .android_secure : ",
+				   "/sbin/wipe .a_s",
+				   "\nUnable to execute wipe!\n(%s)\n",
+				   "\nError : Run 'wipe .a_s' via adb!\n\n",
+				   "\n.android_secure wipe complete!\n\n",
+				   "\n.android_secure wipe aborted!\n\n");
 			break;
 
 		case ITEM_WIPE_BAT:
@@ -893,18 +900,8 @@ show_menu_wipe()
 				   "/sbin/wipe battery",
 				   "\nUnable to execute wipe!\n(%s)\n",
 				   "\nError : Run 'wipe battery' via adb!\n\n",
-				   "\nBattery info wipe complete!\n\n",
-				   "\nBattery info wipe aborted!\n\n");
-			break;
-
-		case ITEM_WIPE_ROT:
-			run_script("\nWipe rotate settings",
-				   "\nWiping rotate settings : ",
-				   "/sbin/wipe rotate",
-				   "\nUnable to execute wipe!\n(%s)\n",
-				   "\nError : Run 'wipe rotate' via adb!\n\n",
-				   "\nRotate settings wipe complete!\n\n",
-				   "\nRotate settings wipe aborted!\n\n");
+				   "\nBattery stats wipe complete!\n\n",
+				   "\nBattery stats wipe aborted!\n\n");
 			break;
 
                 case ITEM_WIPE_ALL:
@@ -916,8 +913,10 @@ show_menu_wipe()
                         ui_print("\nWiping everything...\n");
                         erase_root("DATA:");
                         erase_root("CACHE:");
-		    exec_script("\nWiping EXT filesystem...\n",
+		    exec_script("\nWiping sd-ext...\n",
 				"/sbin/wipe ext");
+		    exec_script("\nWiping .android_secure...\n",
+				"/sbin/wipe .a_s");
                         ui_print("\nWipe all complete.\n\n");
                     } else {
                         ui_print("\nWipe all aborted.\n\n");
@@ -997,7 +996,7 @@ show_menu_br()
                 case ITEM_NANDROID_BCK:
 			run_script("\nCreate Nandroid backup?",
 				   "\nPerforming backup : ",
-				   "/sbin/nandroid-mobile.sh -b --norecovery --nomisc --nosplash1 --nosplash2 --defaultinput",
+				   "/sbin/nandroid-mobile.sh -b -a --norecovery --nomisc --nosplash1 --nosplash2 --defaultinput",
 				   "\nuNnable to execute nandroid-mobile.sh!\n(%s)\n",
 				   "\nError : Run 'nandroid-mobile.sh' via adb!\n",
 				   "\nBackup complete!\n\n",
@@ -1007,7 +1006,7 @@ show_menu_br()
                 case ITEM_NANDROID_BCKEXT:
 			run_script("\nCreate Nandroid backup + EXT?",
 				   "\nPerforming backup : ",
-				   "/sbin/nandroid-mobile.sh -b -e --norecovery --nomisc --nosplash1 --nosplash2 --defaultinput",
+				   "/sbin/nandroid-mobile.sh -b -e -a --norecovery --nomisc --nosplash1 --nosplash2 --defaultinput",
 				   "\nuNnable to execute nandroid-mobile.sh!\n(%s)\n",
 				   "\nError : Run 'nandroid-mobile.sh' via adb!\n",
 				   "\nBackup complete!\n\n",
@@ -1055,9 +1054,9 @@ show_menu_partition()
 #define ITEM_PART_EXT4     3
 
     static char* items[] = { "- Partition SD",
-			     "- Repair SD-Ext",
-			     "- SD: EXT2 > EXT3",
-                             "- SD: EXT3 > EXT4",
+			     "- Repair EXT",
+			     "- EXT2 > EXT3",
+                             "- EXT3 > EXT4",
                              NULL };
 
     ui_start_menu(headers, items);
